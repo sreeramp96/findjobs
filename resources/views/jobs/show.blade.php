@@ -1,169 +1,244 @@
 <x-layout>
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <section class="md:col-span-3">
-            <div class="rounded-lg shadow-md bg-white p-3">
-                <div class="flex justify-between items-center">
-                    <a class="block p-4 text-blue-700" href="{{ route('jobs.index') }}">
-                        <i class="fa fa-arrow-alt-circle-left"></i>
-                        Back To Listings
-                    </a>
-                    @can('update', $job)
-                        <div class="flex space-x-3 ml-4">
-                            <a href="{{ route('jobs.edit', $job->id) }}"
-                                class="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded">Edit</a>
-                            <!-- Delete Form -->
-                            <form method="POST" action="{{ route('jobs.destroy', $job->id) }}"
-                                onsubmit="return confirm('Are you sure that you want to delete this job?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded">
-                                    Delete
-                                </button>
-                            </form>
-                            <!-- End Delete Form -->
-                        </div>
-                    @endcan
-                </div>
-                <div class="p-4">
-                    <h2 class="text-xl font-semibold">
-                        {{ $job->title }}
-                    </h2>
-                    <p class="text-gray-700 text-lg mt-2">
-                        {{ $job->description }}
-                    </p>
-                    <ul class="my-4 bg-gray-100 p-4">
-                        <li class="mb-2">
-                            <strong>Job Type:</strong>{{ $job->job_type }}
-                        </li>
-                        <li class="mb-2">
-                            <strong>Remote:</strong>{{ $job->remote ? 'Yes' : 'No' }}
-                        </li>
-                        <li class="mb-2">
-                            <strong>Salary:</strong> {{ number_format($job->salary) }}
-                        </li>
-                        <li class="mb-2">
-                            <strong>Site Location:</strong> {{ $job->city }}, {{ $job->state }}
-                        </li>
-                        @if ($job->tags)
-                            <li class="mb-2">
-                                <strong>Tags:</strong>{{ ucwords(str_replace(',', ', ', $job->tags)) }}
-                            </li>
-                        @endif
-                    </ul>
+    <div class="container mx-auto px-4 py-8">
+        {{-- Header Area --}}
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+            <div class="flex items-center space-x-4">
+                <a href="{{ route('jobs.index') }}" class="w-10 h-10 bg-white border border-slate-200 rounded-xl flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:border-emerald-200 transition-all shadow-sm">
+                    <i class="fa fa-arrow-left"></i>
+                </a>
+                <div>
+                    <nav class="flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+                        <a href="/" class="hover:text-emerald-600">Home</a>
+                        <span>/</span>
+                        <a href="/jobs" class="hover:text-emerald-600">Jobs</a>
+                        <span>/</span>
+                        <span class="text-slate-500">Details</span>
+                    </nav>
+                    <h1 class="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">{{ $job->title }}</h1>
                 </div>
             </div>
 
-            <div class="container mx-auto p-4">
+            @can('update', $job)
+                <div class="flex items-center space-x-3">
+                    <a href="{{ route('jobs.edit', $job->id) }}"
+                        class="px-5 py-2.5 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50 transition-all shadow-sm">
+                        <i class="fa fa-edit mr-2 text-emerald-500"></i> Edit
+                    </a>
+                    <form method="POST" action="{{ route('jobs.destroy', $job->id) }}"
+                        onsubmit="return confirm('Are you sure you want to delete this job?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="px-5 py-2.5 bg-red-50 text-red-600 font-bold rounded-xl hover:bg-red-100 transition-all">
+                            <i class="fa fa-trash mr-2"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            @endcan
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            {{-- Main Content --}}
+            <div class="lg:col-span-2 space-y-8">
+                {{-- Job Overview Card --}}
+                <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
+                    <h2 class="text-xl font-bold text-slate-900 mb-6 flex items-center">
+                        <i class="fa fa-file-lines mr-3 text-emerald-500"></i> Job Description
+                    </h2>
+                    <div class="text-slate-600 leading-relaxed space-y-4 text-lg">
+                        {{ $job->description }}
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-10 pt-8 border-t border-slate-50">
+                        <div>
+                            <span class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Salary</span>
+                            <span class="text-slate-900 font-bold">${{ number_format($job->salary) }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Type</span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-100">
+                                {{ $job->job_type }}
+                            </span>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Remote</span>
+                            <span class="text-slate-900 font-bold">{{ $job->remote ? 'Yes' : 'No' }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Location</span>
+                            <span class="text-slate-900 font-bold">{{ $job->city }}, {{ $job->state }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Requirements & Benefits --}}
                 @if ($job->requirements || $job->benefits)
-                    <h2 class="text-xl font-semibold mb-4">Job Details</h2>
-                    <div class="rounded-lg shadow-md bg-white p-4">
-                        <h3 class="text-lg font-semibold mb-2 text-blue-500">
-                            Job Requirements
-                        </h3>
-                        <p>
-                            {{ $job->requirements }}
-                        </p>
-                        <h3 class="text-lg font-semibold mt-4 mb-2 text-blue-500">
-                            Benefits
-                        </h3>
-                        <p>
-                            {{ $job->benefits }}
-                        </p>
+                    <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm space-y-8">
+                        @if($job->requirements)
+                            <div>
+                                <h2 class="text-xl font-bold text-slate-900 mb-4 flex items-center">
+                                    <i class="fa fa-list-check mr-3 text-emerald-500"></i> Requirements
+                                </h2>
+                                <p class="text-slate-600 leading-relaxed">
+                                    {{ $job->requirements }}
+                                </p>
+                            </div>
+                        @endif
+
+                        @if($job->benefits)
+                            <div>
+                                <h2 class="text-xl font-bold text-slate-900 mb-4 flex items-center">
+                                    <i class="fa fa-gift mr-3 text-emerald-500"></i> Benefits
+                                </h2>
+                                <p class="text-slate-600 leading-relaxed">
+                                    {{ $job->benefits }}
+                                </p>
+                            </div>
+                        @endif
                     </div>
                 @endif
-                @auth
-                    <p class="my-5">
-                        Put "Job Application" as the subject of your email
-                        and attach your resume.
-                    </p>
 
-                    <div x-data="{ open: false }" id="applicant-form">
-                        <button @click="open = true"
-                            class="block w-full text-center px-5 py-2.5 shadow-sm rounded border text-base font-medium cursor-pointer text-indigo-700 bg-indigo-100 hover:bg-indigo-200">
-                            Apply Now
-                        </button>
-                        <div x-cloak x-show="open"
-                            class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-                            <div @click.away="open = false" class="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-                                <h3 class="text-lg font-semibold mb-4">
-                                    Apply For {{ $job->title }}
-                                </h3>
-                                <form method="POST" action="{{ route('applicant.store', $job->id) }}"
-                                    enctype="multipart/form-data">
-                                    @csrf
-                                    <x-inputs.text id="full_name" name="full_name" label="Full Name" :required="true" />
-                                    <x-inputs.text id="contact_phone" name="contact_phone" label="Contact Phone" />
-                                    <x-inputs.text id="contact_email" name="contact_email" label="Contact Email"
-                                        :required="true" />
-                                    <x-inputs.text-area id="message" name="message" label="Message" />
-                                    <x-inputs.text id="location" name="location" label="Location" />
-                                    <x-inputs.file id="resume" name="resume" label="Upload Your Resume (pdf)"
-                                        :required="true" />
+                {{-- Application Section --}}
+                <div class="bg-slate-900 rounded-3xl p-8 md:p-10 text-white relative overflow-hidden">
+                    <div class="absolute right-0 top-0 -mr-16 -mt-16 w-64 h-64 bg-emerald-600/20 rounded-full blur-3xl"></div>
+                    <div class="relative z-10">
+                        <h2 class="text-2xl font-bold mb-4">Ready to apply?</h2>
+                        <p class="text-slate-400 mb-8 max-w-lg">
+                            Submit your application today and take the next step in your professional journey.
+                        </p>
 
-                                    <button type="submit"
-                                        class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">Submit
-                                        Application</button>
-                                    <button @click="open = false"
-                                        class="bg-gray-300 hover::bg-gray-600 text-black px-4 py-2 rounded-md">Cancel</button>
-                                </form>
+                        @auth
+                            <div x-data="{ open: false }">
+                                <button @click="open = true"
+                                    class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-4 rounded-2xl font-bold transition-all shadow-xl shadow-emerald-900/20 flex items-center space-x-2 active:scale-95">
+                                    <span>Apply for this position</span>
+                                    <i class="fa fa-paper-plane text-sm opacity-70"></i>
+                                </button>
+                                
+                                {{-- Application Modal --}}
+                                <div x-cloak x-show="open" 
+                                     x-transition:enter="transition ease-out duration-300"
+                                     x-transition:enter-start="opacity-0 scale-95"
+                                     x-transition:enter-end="opacity-100 scale-100"
+                                     class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm">
+                                    <div @click.away="open = false" class="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto text-slate-900">
+                                        <div class="flex justify-between items-center mb-6">
+                                            <h3 class="text-2xl font-extrabold tracking-tight">
+                                                Apply For <span class="text-emerald-600">{{ $job->title }}</span>
+                                            </h3>
+                                            <button @click="open = false" class="text-slate-400 hover:text-slate-600">
+                                                <i class="fa fa-times text-xl"></i>
+                                            </button>
+                                        </div>
+                                        
+                                        <form method="POST" action="{{ route('applicant.store', $job->id) }}" enctype="multipart/form-data" class="space-y-5">
+                                            @csrf
+                                            <x-inputs.text id="full_name" name="full_name" label="Full Name" :required="true" />
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                                <x-inputs.text id="contact_phone" name="contact_phone" label="Phone Number" />
+                                                <x-inputs.text id="contact_email" name="contact_email" label="Email Address" :required="true" />
+                                            </div>
+                                            <x-inputs.text-area id="message" name="message" label="Cover Letter / Message" />
+                                            <x-inputs.text id="location" name="location" label="Your Location" />
+                                            <x-inputs.file id="resume" name="resume" label="Upload Resume (PDF)" :required="true" />
+
+                                            <div class="pt-4 flex flex-col md:flex-row gap-3">
+                                                <button type="submit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-4 rounded-2xl font-bold transition-all shadow-lg shadow-emerald-100">
+                                                    Submit Application
+                                                </button>
+                                                <button @click="open = false" type="button" class="px-6 py-4 text-slate-500 font-bold hover:bg-slate-50 rounded-2xl transition-all border border-transparent hover:border-slate-100">
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        @else
+                            <div class="bg-white/5 border border-white/10 rounded-2xl p-6 flex items-start space-x-4">
+                                <div class="w-10 h-10 bg-emerald-500/20 rounded-xl flex items-center justify-center shrink-0">
+                                    <i class="fa fa-lock text-emerald-400"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-white mb-1 tracking-tight leading-tight">Authentication Required</h4>
+                                    <p class="text-slate-400 text-sm mb-4">You must be logged in to apply for this position.</p>
+                                    <a href="/login" class="text-emerald-400 font-bold text-sm hover:underline">Sign in to apply &rarr;</a>
+                                </div>
+                            </div>
+                        @endauth
                     </div>
-                @else
-                    <p class="my-5 bg-gray-200 rounded-xl p-3">
-                        <i class="fas fa-info-circle mr-3"></i> You must be logged in to apply for this job
-                    </p>
-                @endauth
+                </div>
             </div>
 
-            {{-- <div class="bg-white p-6 rounded-lg shadow-md mt-6">
-                <div id="map"></div>
-            </div> --}}
-
-        </section>
-
-        <aside class="bg-white rounded-lg shadow-md p-3">
-            <h3 class="text-xl text-center mb-4 font-bold">
-                Company Info
-            </h3>
-            @if ($job->company_logo)
-                <img src="/storage/{{ $job->company_logo }}" alt="Ad" class="w-full rounded-lg mb-4 m-auto" />
-            @endif
-
-            <h4 class="text-lg font-bold">{{ $job->company_name }}</h4>
-            @if ($job->company_description)
-                <p class="text-gray-700 text-lg my-3">
-                    {{ $job->company_description }}
-                </p>
-            @endif
-            @if ($job->company_website)
-                <a href="{{ $job->company_website }}" target="_blank" class="text-blue-500">Visit Website</a>
-            @endif
-
-            {{-- Bookmark Button --}}
-            @guest
-                <p class="mt-10 bg-gray-200 text-gray-700 font-bold w-full py-2 px-4 rounded-full text-center">
-                    <i class="fas fa-info-circle mr-3"></i>You must be logged in to bookmark a job
-                </p>
-            @else
-                <form method="POST"
-                    action="{{ auth()->user()->bookmarkedJobs()->where('job_id', $job->id)->exists()? route('bookmarks.destroy', $job->id): route('bookmarks.store', $job->id) }}"
-                    class="mt-10">
-                    @csrf
-                    @if (auth()->user()->bookmarkedJobs()->where('job_id', $job->id)->exists())
-                        @method('DELETE')
-                        <button
-                            class="bg-red-500 hover:bg-red-600 text-white font-bold w-full py-2 px-4 rounded-full flex items-center justify-center">
-                            <i class="fas fa-bookmark mr-3"></i> Remove Bookmark
-                        </button>
-                    @else
-                        <button
-                            class="bg-blue-500 hover:bg-blue-600 text-white font-bold w-full py-2 px-4 rounded-full flex items-center justify-center">
-                            <i class="fas fa-bookmark mr-3"></i> Bookmark Listing
-                        </button>
+            {{-- Sidebar --}}
+            <aside class="space-y-8">
+                {{-- Company Info --}}
+                <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm text-center">
+                    <div class="w-24 h-24 bg-slate-50 rounded-3xl border border-slate-100 flex items-center justify-center p-4 mx-auto mb-6">
+                        @if ($job->company_logo)
+                            @if (file_exists(public_path('images/' . $job->company_logo)))
+                                <img src="{{ asset('images/' . $job->company_logo) }}" alt="{{ $job->company_name }}" class="max-w-full max-h-full object-contain" />
+                            @else
+                                <img src="{{ asset('storage/' . $job->company_logo) }}" alt="{{ $job->company_name }}" class="max-w-full max-h-full object-contain" />
+                            @endif
+                        @else
+                            <i class="fa fa-building text-slate-300 text-4xl"></i>
+                        @endif
+                    </div>
+                    <h3 class="text-xl font-extrabold text-slate-900 mb-2 tracking-tight">{{ $job->company_name }}</h3>
+                    
+                    @if ($job->company_description)
+                        <p class="text-slate-500 text-sm leading-relaxed mb-6">
+                            {{ $job->company_description }}
+                        </p>
                     @endif
-                </form>
-            @endguest
-        </aside>
+
+                    <div class="space-y-3 pt-6 border-t border-slate-50">
+                        @if ($job->company_website)
+                            <a href="{{ $job->company_website }}" target="_blank" class="block w-full py-3 bg-slate-50 text-slate-700 font-bold rounded-xl hover:bg-slate-100 transition-all border border-slate-100">
+                                <i class="fa fa-globe mr-2 text-emerald-500"></i> Visit Website
+                            </a>
+                        @endif
+
+                        {{-- Bookmark Button --}}
+                        @auth
+                            <form method="POST"
+                                action="{{ auth()->user()->bookmarkedJobs()->where('job_id', $job->id)->exists()? route('bookmarks.destroy', $job->id): route('bookmarks.store', $job->id) }}">
+                                @csrf
+                                @if (auth()->user()->bookmarkedJobs()->where('job_id', $job->id)->exists())
+                                    @method('DELETE')
+                                    <button class="w-full py-3 bg-red-50 text-red-600 font-bold rounded-xl hover:bg-red-100 transition-all flex items-center justify-center">
+                                        <i class="fas fa-bookmark mr-2"></i> Saved
+                                    </button>
+                                @else
+                                    <button class="w-full py-3 bg-emerald-50 text-emerald-600 font-bold rounded-xl hover:bg-emerald-100 transition-all flex items-center justify-center border border-emerald-100">
+                                        <i class="far fa-bookmark mr-2"></i> Save Job
+                                    </button>
+                                @endif
+                            </form>
+                        @else
+                             <div class="py-3 bg-slate-50 text-slate-400 text-xs font-bold rounded-xl border border-dashed border-slate-200">
+                                Sign in to save this job
+                             </div>
+                        @endauth
+                    </div>
+                </div>
+
+                {{-- Share Job --}}
+                <div class="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm">
+                    <h3 class="font-bold text-slate-900 mb-4 tracking-tight leading-tight">Share this opportunity</h3>
+                    <div class="flex gap-3">
+                        <button class="w-10 h-10 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all">
+                            <i class="fab fa-linkedin-in"></i>
+                        </button>
+                        <button class="w-10 h-10 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all">
+                            <i class="fab fa-twitter"></i>
+                        </button>
+                        <button class="w-10 h-10 bg-slate-50 rounded-lg flex items-center justify-center text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 transition-all">
+                            <i class="fa fa-link text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </div>
     </div>
 </x-layout>

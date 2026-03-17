@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Workopia Job Application</title>
+    <title>FindJobs Job Application</title>
 </head>
 
 <body>
-    <p>There has been a new job application to your Workopia listing</p>
+    <p>There has been a new job application to your FindJobs listing</p>
 
     <p><strong>Job Title: </strong>{{ $job->title }}</p>
     <p><strong>Application Details: </strong></p>
@@ -19,7 +19,8 @@
     <p><strong>Message: </strong>{{ $application->message }}</p>
     <p><strong>Location: </strong>{{ $application->location }}</p>
 
-    <p>Login to your Workopia account to view the application.</p>
+    <p>Login to your FindJobs account to view the application.</p>
 </body>
 
 </html>
+

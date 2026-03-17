@@ -9,12 +9,15 @@
         integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     @vite('resources/css/app.css')
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     <script src="//unpkg.com/alpinejs" defer></script>
-    <title>{{ $title ?? 'Workopia | Find and list jobs' }}</title>
+    <title>{{ $title ?? 'FindJobs | Find and list jobs' }}</title>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-slate-50 font-sans antialiased text-slate-900">
     <x-header />
     @if (request()->is('/'))
         <x-hero />
@@ -35,3 +38,4 @@
 </body>
 
 </html>
+
